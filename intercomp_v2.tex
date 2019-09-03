@@ -1,0 +1,374 @@
+% Copyright 2019 by Jordi Inglada
+%
+% This file may be distributed and/or modified
+%
+% 1. under the LaTeX Project Public License and/or
+% 2. under the GNU Public License.
+%
+
+\documentclass[8pt]{beamer}
+\usetheme{Cesbio}
+\setbeamertemplate{footnote}{%
+  \parindent 0em\noindent%
+  \raggedright%\raggedright
+  \usebeamercolor{footnote}\hbox to 3.5em{\hfil\insertfootnotemark}\insertfootnotetext\par%
+}
+\setbeamertemplate{navigation symbols}{}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{FiraSans}
+\usepackage{mathtools}
+\usepackage{ulem}
+
+% The short title appears at the bottom of every slide, the full title is only on the title page
+\title{MAJA and MAQT cross-comparison notebook [on-going]} 
+\newcommand{\shorttitle}{MAVA vs MAQT notes}
+
+\author{J. Colin\inst{1}}% \and Jean Bombeur\inst{2} \and Igor Le Tractor\inst{3}}
+\newcommand{\shortauthor}{J. Colin} % Name to display in the footline
+\institute{\inst{1}Centre d'\'Etudes Spatiales de la Biosph\`ere, France \url{jerome.colin@cesbio.cnes.fr}\\
+%\inst{2}Université des \^Iles Sandwich, Royaume-Uni\\
+%\inst{3}Laboratoire de mécanique agricole, Moldavie
+}
+
+\date{\today} % Date, can be changed to a custom date
+
+\begin{document}
+{
+	\setbeamertemplate{footline}{} % Remove footline in titlepage
+	\begin{frame}
+		\vspace{.8cm}
+		\includegraphics[width=1.5cm]{logo_cesbio_transp.pdf}
+	\titlepage % Print the title page as the first slide
+	\end{frame}
+}
+
+%----------------------------------------------------------------------------------------
+\begin{frame}
+	\frametitle{Overview}
+	\tableofcontents
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+%   PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+%------------------------------------------------
+\section{Experimental setup} 
+%------------------------------------------------
+
+\subsection{Area of Interest} 
+
+\begin{frame}
+\frametitle{Area of Interest}
+	
+	TODO: check DTM file, $\Delta_{altitude}$, Water fraction, etc...	
+	
+	\begin{columns}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				31TFJ 2018-03-14(S2B)
+		     	\includegraphics[width=1\textwidth]{figs/20180314_S2B.jpg}
+		     	13\% clouds
+		    \end{center}		
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				31TFJ 2018-03-19(S2A)
+		     	\includegraphics[width=1\textwidth]{figs/20180319_S2A.jpg}
+		     	34\% clouds
+		    \end{center}		
+		\end{column}
+	\end{columns}
+\end{frame}
+
+%------------------------------------------------
+\subsection{Code configurations} 
+
+\begin{frame}
+\frametitle{Codes and GIPP versions}
+
+	Versions of the code:
+	
+	\begin{itemize}
+		\item MAJA refers here to the 3.3.1 version compiled from repository \texttt{CNES/MAJA\_internal}, ran on HAL
+		\item MAQT refers here to the Wdark\_fix branch from repository \texttt{Mireille Huc/Chaines\_N2\_N3}, ran on S2CALC
+	\end{itemize}
+	
+	GIPP sources:
+	
+	\begin{itemize}
+		\item MAJA: from repository \texttt{Olivier Hagolle/GIPP\_MAJA}
+		\item MAQT: in \texttt{../Exe/PARAM\_N2} from repository \texttt{Mireille Huc/Chaines\_N2\_N3}
+	\end{itemize}
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}
+\frametitle{GIPP L2COMM differences}
+	
+	\begin{block}{diff GIPP\_S2\_MAJA\_3.3\_TM vs GIPP\_S2\_MAJA\_3.3\_TM\_CAMS}
+		\begin{tabular}{|l|l|}
+			\hline 
+			\textit{No CAMS} 					& \textit{CAMS} \\ 
+			\hline 
+			MT\_Weight\_Threshold: 19 			& MT\_Weight\_Threshold: 10 \\ 
+			\hline 
+		\end{tabular} 
+	\end{block}
+	
+	\begin{block}{diff GIPP\_S2\_MAJA\_3.3\_TM\_CAMS vs GIPP\_MAQT}
+		\begin{tabular}{|l|l|}
+			\hline 
+			\textit{MAJA} & \textit{MAQT} \\ 
+			\hline 
+			Cal\_Adjust\_Factor\footnote{\texttt{Cal\_Adjust\_Option=False} in both MAJA and MAQT} : 1.0 1.0 ... 							& Cal\_Adjust\_Factor: 1.0 0.5... \\ 
+			\hline 
+			Saturation\_Threshold: 1.3 			& Saturation\_Threshold: 0.900 \\ 
+			\hline 
+			Cirrus\_Alt\_Ref: 2000 				& ? \\ 
+			\hline 
+			Min\_Threshold\_Var\_Blue: 0.016 	& Min\_Threshold\_Var\_Blue: 0.014 \\ 
+			\hline 
+			AOT\_KPondCAMS: 0.2 					& KpondCAMS = 0.2 in param\_S2\\ 
+			\hline 
+			AOT\_HeightScale: 2000 				& ha = 2000 in param\_S2 \\ 
+			\hline 
+			Cirrus\_Correction\_Option: true 	& Cirrus\_Correction\_Option: false \\ 
+			\hline 
+			Cirrus\_Max\_Reflectance: 0.07 		& ? \\ 
+			\hline 
+			Cirrus\_Gamma\_Band\_Codes: B2 B3	& Cirrus\_Gamma\_Band\_Codes: B1 B2 B3 \\ 
+			\hline 
+		\end{tabular} 
+	\end{block}
+	
+	\textbf{=> GIPP MAJA values used as reference}	
+
+\end{frame}
+
+%------------------------------------------------
+\subsection{Test cases}
+
+\begin{frame}
+\frametitle{Experimental test cases}
+	
+	Configurations flags used:
+	
+	\begin{itemize}
+		\item Init (I) or Backward (B) mode, although no explicit Init mode found on MAQT (passing single date \texttt{-d 20180314})
+		\item Cirrus correction defaults to True on MAJA while False on MAQT
+		\item Environment correction defaults to True (both in MAJA and MAQT)
+		\item Use CAMS if True, else Constant\_Model: CONTINEN (both in MAJA and MAQT)
+	\end{itemize}
+	
+	Run naming convention: any combination of \texttt{[MAJA|MAQT]\_[I|B][0|1]\{4\}}, one spare bit left for future addition.	
+	
+	\begin{center}
+		Examples of experimental setup used with both MAJA and MAQT:
+		\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+			\hline 
+			Test name   & I0000 & I1000 & I1100 & I1110 & B0000 & B1000 & B1100 & B1110\\ 
+			\hline 
+			Mode        & I     & I     & I     & I     & B     & B     & B     & B   \\ 
+			\hline 
+			Cirrus Corr & F     & T     & T     & T     & F     & T     & T     & T   \\ 
+			\hline 
+			Env Corr    & F     & F     & T     & T     & F     & F     & T     & T   \\ 
+			\hline 
+			CAMS        & F     & F     & F     & T     & F     & F     & F     & T   \\ 
+			\hline 
+		\end{tabular} 
+	\end{center}
+	
+	
+\end{frame}
+
+
+
+
+
+
+
+
+\begin{frame}
+\frametitle{Note on graphics}
+	\begin{itemize}
+		\item The following scatterplots are resampled outputs of either AOT or SRE
+		\item All figures refer to the first image dated back to 2018-03-14
+		\item The resampling applied here is 1/20
+		\item Edge and cloud masks are used to subset "Land and water" plots (in blue)
+		\item The MAQT water mask is added to edge and clouds masks for the "Land only" plots (in green)
+		\item On absolute difference maps, a view of the DTM is provided for interpretation of effects of the topography
+		\item Units are: AOT (-), SRE (-), altitude (meters a.m.s.l, SRTM based)
+	\end{itemize}
+\end{frame}
+
+
+
+
+%------------------------------------------------
+%------------------------------------------------
+\section{MAJA vs MAQT in Init mode, no CAMS, no Cirrus correction}
+%------------------------------------------------
+%------------------------------------------------
+
+
+
+%------------------------------------------------
+\subsection{AOT cross-comparison}
+\begin{frame}
+\frametitle{MAJA vs MAQT in Init mode, no CAMS}
+	\begin{center}
+		\includegraphics[scale=0.4]{figs/I0000_maja-aot-resampled_vs_I0000_maqt-aot-resampled.png}
+	\end{center}
+	
+	$AOT_{MAJA}$ vs $AOT_{MAQT}$ for all cloud-free pixels (left), and for cloud-free pixels over land only (right), no CAMS, no Cirrus correction (I0000)
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}
+\frametitle{MAJA vs MAQT in Init mode, no CAMS}
+	\begin{center}
+		\includegraphics[scale=0.48]{figs/diffmap_I0000_maja-I0000_maqt.png}
+	\end{center}
+	
+	Gap-filling implementation differs in MAQT (custom) and MAJA (OTB based)
+\end{frame}
+
+%------------------------------------------------
+\subsection{SRE cross-comparison}
+\begin{frame}
+\frametitle{MAJA vs MAQT in Init mode, no CAMS}
+	%\begin{columns}
+	%\column{.7\textwidth}
+		\begin{tabular}{cc}
+			\includegraphics[scale=0.2]{figs/I0000_maja-sreB2-resampled_vs_I0000_maqt-sreB2-resampled.png} & \includegraphics[scale=0.2]{figs/I0000_maja-sreB3-resampled_vs_I0000_maqt-sreB3-resampled.png} \\ 
+			 
+			\includegraphics[scale=0.2]{figs/I0000_maja-sreB4-resampled_vs_I0000_maqt-sreB4-resampled.png} &  \\ 
+		\end{tabular} 
+		
+	%\column{.3\textwidth}
+		$SRE_{MAJA}$ vs $SRE_{MAQT}$ for B2 (top left), B3 (top right) and B4 (bottom left)
+	%\end{columns}
+\end{frame}
+
+
+
+%------------------------------------------------
+%------------------------------------------------
+\section{MAJA vs MAQT in Init mode, with CAMS, no Cirrus correction}
+%------------------------------------------------
+%------------------------------------------------
+
+%------------------------------------------------
+
+
+\begin{frame}
+\subsection{Bug in MAJA in Init + CAMS mode}
+\frametitle{MAJA vs MAQT in Init with CAMS}
+	AOT results from MAJA (left) as compared to the expected result produced with MAQT (right) in Init mode with \texttt{Use\_Cams\_Data = true}
+	\includegraphics[width=1\textwidth]{figs/intercompInitWithCams.png}
+	MAQT: \texttt{/work/CESBIO/projects/Maja/L2A\_MAJA/ArlesIntercomp/31TFJ/MAQT}
+	
+	MAJA: \texttt{/work/CESBIO/projects/Maja/L2A\_MAJA/ArlesIntercomp/31TFJ/GIPP\_I1110}
+
+\end{frame}
+
+%------------------------------------------------
+%------------------------------------------------
+\section{MAJA vs MAQT in Backward mode, no CAMS, no Cirrus correction}
+%------------------------------------------------
+%------------------------------------------------
+
+%------------------------------------------------
+\subsection{AOT cross-comparison}
+\begin{frame}
+\frametitle{MAJA vs MAQT in Backward mode, no CAMS}
+	\begin{center}
+		\includegraphics[scale=0.4]{figs/B0000_maja-aot-resampled_vs_B0000_maqt-aot-resampled.png}
+	\end{center}
+	
+	$AOT_{MAJA}$ vs $AOT_{MAQT}$ for all cloud-free pixels (left), and for cloud-free pixels over land only (right), no CAMS, no Cirrus correction (I0000)
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}
+\frametitle{MAJA vs MAQT in Backward mode, no CAMS}
+	\begin{center}
+		\includegraphics[scale=0.48]{figs/diffmap_B0000_maja-B0000_maqt.png}
+	\end{center}
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}
+\frametitle{MAJA vs MAQT in Backward mode, no CAMS}
+	\begin{center}
+		\includegraphics[scale=0.48]{figs/intercompBackwardWithoutCams.png}
+	\end{center}
+	
+	AOT results from MAJA (left) vs MAQT (right) in Backward mode with \texttt{Use\_Cams\_Data = false}
+\end{frame}
+
+
+%------------------------------------------------
+\subsection{SRE cross-comparison}
+\begin{frame}
+\frametitle{MAJA vs MAQT in Init mode, no CAMS}
+	%\begin{columns}
+	%\column{.7\textwidth}
+		\begin{tabular}{cc}
+			\includegraphics[scale=0.2]{figs/B0000_maja-sreB2-resampled_vs_B0000_maqt-sreB2-resampled.png} & \includegraphics[scale=0.2]{figs/B0000_maja-sreB3-resampled_vs_B0000_maqt-sreB3-resampled.png} \\ 
+			 
+			\includegraphics[scale=0.2]{figs/B0000_maja-sreB4-resampled_vs_B0000_maqt-sreB4-resampled.png} &  \\ 
+		\end{tabular} 
+		
+	%\column{.3\textwidth}
+		$SRE_{MAJA}$ vs $SRE_{MAQT}$ for B2 (top left), B3 (top right) and B4 (bottom left)
+	%\end{columns}
+\end{frame}
+
+
+%------------------------------------------------
+\section{What next?}
+\begin{frame}
+\frametitle{TODO list}
+	In Init without CAMS:
+	\begin{itemize}
+		\item Differences found but limited impact on SRE
+		\item Implementation variations for gap-filling, resampling, angles computation for cloud shadows (avg angle in MAQT, one angle per band in MAJA)
+		\item Avoid full-resolution cross-comparison
+	\end{itemize}
+	
+	In Init with CAMS: bug in MAJA 3.3.1
+
+	TODO:
+	\begin{itemize}
+		\item Run/debug MAQT TVA on HAL (clean-up branches in repo)
+		\item Bugfix for MAJA in Init + CAMS (FA xxx)
+		\item Add another test case with strong AOT (ACIX)?
+	\end{itemize}
+\end{frame}
+
+
+%------------------------------------------------
+%
+%------------------------------------------------
+
+%\begin{frame}
+%\frametitle{References}
+%\footnotesize{
+%\begin{thebibliography}{99} % Beamer does not support BibTeX so references must be inserted manually as below
+%\bibitem[Smith, 2012]{p1} John Smith (2012)
+%\newblock Title of the publication
+%\newblock \emph{Journal Name} 12(3), 45 -- 678.
+%\end{thebibliography}
+%}
+%\end{frame}
+
+%----------------------------------------------------------------------------------------
+
+\end{document}
+
